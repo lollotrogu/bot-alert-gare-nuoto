@@ -88,6 +88,18 @@ jobs:
       - name: Esegui unit test
         run: npm test
 
+      - name: Cache locandine PDF
+        uses: actions/cache@v4
+        with:
+          path: public/pdf
+          key: pdfs-${{ hashFiles('public/data/gare*.json') }}
+          restore-keys: |
+            pdfs-
+
+      - name: Scarica locandine PDF (per apertura diretta nel visualizzatore)
+        continue-on-error: true
+        run: node scripts/fetch-pdfs.mjs
+
       - name: Build applicazione React
         env:
           VITE_APPS_SCRIPT_URL: ${{ vars.APPS_SCRIPT_URL || vars.VITE_APPS_SCRIPT_URL || secrets.APPS_SCRIPT_URL || secrets.VITE_APPS_SCRIPT_URL }}

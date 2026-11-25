@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { detectSector, assetUrl, loadGare } from './lib/api.js';
+import { detectSector, assetUrl, loadGare, loadPdfManifest } from './lib/api.js';
 import { AGONISTI_AUTHORIZED, CLUB_INFO, comitatoById } from './lib/comitati.js';
 import { dateTime, todayIso } from './lib/format.js';
 import Header from './components/Header.jsx';
@@ -31,6 +31,7 @@ export default function App() {
   const sector = useMemo(() => detectSector(), []);
   const isAgonisti = sector === 'agonisti';
   const [data, setData] = useState(null);
+  const [pdfSet, setPdfSet] = useState(() => new Set());
   const [error, setError] = useState('');
   const [filters, setFilters] = usePersistentFilters(sector);
   const [modalOpen, setModalOpen] = useState(false);
@@ -38,6 +39,10 @@ export default function App() {
   useEffect(() => {
     loadGare(sector).then(setData).catch((err) => setError(err.message));
   }, [sector]);
+
+  useEffect(() => {
+    loadPdfManifest().then(setPdfSet);
+  }, []);
 
   const events = data?.events || [];
   const today = todayIso();
@@ -110,7 +115,7 @@ export default function App() {
           <Filters filters={filters} setFilters={setFilters} events={events} />
           {error && <div className="alert error">⚠️ {error}</div>}
           {!data && !error && <div className="loading"><span className="spinner" /> Caricamento calendario…</div>}
-          {data && <GareList events={filtered} newSince={newSince} />}
+          {data && <GareList events={filtered} newSince={newSince} pdfSet={pdfSet} />}
         </section>
 
         <section className="card info-card info-strip" aria-label="Come funziona">

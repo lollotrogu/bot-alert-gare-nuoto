@@ -50,3 +50,17 @@ export async function loadGare(sector = 'master') {
   }
   return data;
 }
+
+export async function loadPdfManifest() {
+  try {
+    const res = await fetch(assetUrl('pdf/manifest.json'), {
+      cache: 'no-cache',
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return new Set();
+    const list = await res.json();
+    return new Set(Array.isArray(list) ? list.map(String) : []);
+  } catch {
+    return new Set();
+  }
+}

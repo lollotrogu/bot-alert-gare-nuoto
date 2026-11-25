@@ -1,7 +1,7 @@
 import { monthKey, monthTitle } from '../lib/format.js';
 import GaraCard from './GaraCard.jsx';
 
-export default function GareList({ events, newSince }) {
+export default function GareList({ events, newSince, pdfSet }) {
   if (!events.length) {
     return (
       <div className="empty card">
@@ -27,7 +27,7 @@ export default function GareList({ events, newSince }) {
           <h3 className="month-title">{monthTitle(g.key)}</h3>
           <div className="month-items">
             {g.items.map((ev) => (
-              <GaraCard key={ev.id} ev={ev} isNew={ev.firstSeen >= newSince} />
+              <GaraCard key={ev.id} ev={ev} isNew={ev.firstSeen >= newSince} hasLocalPdf={pdfSet?.has(ev.id)} />
             ))}
           </div>
         </section>

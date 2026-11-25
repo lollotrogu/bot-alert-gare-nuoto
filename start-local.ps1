@@ -93,6 +93,12 @@ try {
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     }
 
+    $manifestFile = Join-Path $PSScriptRoot 'public\pdf\manifest.json'
+    if ($shouldScrape -or -not (Test-Path $manifestFile)) {
+        Write-Host 'Aggiornamento cache locandine PDF...'
+        node scripts/fetch-pdfs.mjs
+    }
+
     if ($Test) {
         Write-Host 'Esecuzione unit test...'
         npm test

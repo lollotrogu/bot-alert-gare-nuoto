@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { assetUrl } from '../lib/api.js';
 import { comitatoById } from '../lib/comitati.js';
 import { dayMonth, rangeLabel, relativeLabel } from '../lib/format.js';
 import { downloadIcs } from '../lib/ics.js';
@@ -7,7 +8,11 @@ import { safeHttpUrl } from '../lib/security.js';
 const titleCase = (s = '') =>
   s.toLowerCase().replace(/(^|[\s'(.-])(\p{L})/gu, (m, p, c) => p + c.toUpperCase());
 
-export default function GaraCard({ ev, isNew }) {
+function pdfViewerHref(url) {
+  return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}`;
+}
+
+export default function GaraCard({ ev, isNew, hasLocalPdf }) {
   const [open, setOpen] = useState(false);
   const start = dayMonth(ev.dateStart);
   const end = ev.dateEnd && ev.dateEnd !== ev.dateStart ? dayMonth(ev.dateEnd) : null;
@@ -17,7 +22,13 @@ export default function GaraCard({ ev, isNew }) {
   const mapsQuery = encodeURIComponent([ev.impianto, ev.indirizzo || `${ev.citta} ${ev.provincia || ''}`].filter(Boolean).join(', '));
   const finUrl = safeHttpUrl(ev.url);
   const locandinaUrl = safeHttpUrl(ev.locandinaUrl);
+  const locandinaViewerUrl = hasLocalPdf
+    ? assetUrl(`pdf/${encodeURIComponent(ev.id)}.pdf`)
+    : locandinaUrl
+      ? pdfViewerHref(locandinaUrl)
+      : null;
   const risultatiUrl = safeHttpUrl(ev.risultatiUrl);
+  const risultatiViewerUrl = risultatiUrl ? pdfViewerHref(risultatiUrl) : null;
   const iscrizioniUrl = safeHttpUrl(ev.iscrizioniUrl);
 
   return (
@@ -50,6 +61,12 @@ export default function GaraCard({ ev, isNew }) {
             {ev.organizzazione && (<><dt>Organizzazione</dt><dd>{titleCase(ev.organizzazione)}</dd></>)}
             {ev.tempiLimite && (<><dt>Tempi limite</dt><dd>{ev.tempiLimite}</dd></>)}
             <dt>Date</dt><dd>{rangeLabel(ev)}</dd>
+            {locandinaUrl && (
+              <>
+                <dt>Download FIN</dt>
+                <dd><a href={locandinaUrl} target="_blank" rel="noopener noreferrer">Scarica PDF originale</a></dd>
+              </>
+            )}
           </dl>
         )}
 
@@ -60,11 +77,11 @@ export default function GaraCard({ ev, isNew }) {
           {finUrl && (
             <a className="btn btn-ghost btn-sm" href={finUrl} target="_blank" rel="noopener noreferrer">Scheda FIN ↗</a>
           )}
-          {locandinaUrl && (
-            <a className="btn btn-ghost btn-sm" href={locandinaUrl} target="_blank" rel="noopener noreferrer">Locandina PDF</a>
+          {locandinaViewerUrl && (
+            <a className="btn btn-ghost btn-sm" href={locandinaViewerUrl} target="_blank" rel="noopener noreferrer">Locandina PDF</a>
           )}
-          {risultatiUrl && (
-            <a className="btn btn-ghost btn-sm" href={risultatiUrl} target="_blank" rel="noopener noreferrer">Risultati</a>
+          {risultatiViewerUrl && (
+            <a className="btn btn-ghost btn-sm" href={risultatiViewerUrl} target="_blank" rel="noopener noreferrer">Risultati</a>
           )}
           {iscrizioniUrl && !past && (
             <a className="btn btn-ghost btn-sm" href={iscrizioniUrl} target="_blank" rel="noopener noreferrer">Iscrizioni online</a>
