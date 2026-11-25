@@ -39,7 +39,7 @@ jobs:
 
       - name: Invia alert email per le nuove gare
         env:
-          APPS_SCRIPT_URL: ${{ vars.APPS_SCRIPT_URL }}
+          APPS_SCRIPT_URL: ${{ vars.APPS_SCRIPT_URL || vars.VITE_APPS_SCRIPT_URL || secrets.APPS_SCRIPT_URL || secrets.VITE_APPS_SCRIPT_URL }}
           APPS_SCRIPT_TOKEN: ${{ secrets.APPS_SCRIPT_TOKEN }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -72,6 +72,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.ref_name }}
           persist-credentials: false
 
       - name: Setup Node.js
@@ -88,8 +89,12 @@ jobs:
 
       - name: Build applicazione React
         env:
-          VITE_APPS_SCRIPT_URL: ${{ vars.APPS_SCRIPT_URL }}
-        run: npm run build
+          VITE_APPS_SCRIPT_URL: ${{ vars.APPS_SCRIPT_URL || vars.VITE_APPS_SCRIPT_URL || secrets.APPS_SCRIPT_URL || secrets.VITE_APPS_SCRIPT_URL }}
+        run: |
+          if [ -z "$VITE_APPS_SCRIPT_URL" ]; then
+            echo "::warning::APPS_SCRIPT_URL non configurata in Repository Variables/Secrets!"
+          fi
+          npm run build
 
       - name: Upload artefatto GitHub Pages
         uses: actions/upload-pages-artifact@v3
