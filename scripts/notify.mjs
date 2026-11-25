@@ -1,4 +1,7 @@
-// Invia gli alert email per le nuove gare agli iscritti del relativo comitato regionale.
+// Invia gli alert email per le nuove gare (Master e Agonisti) agli iscritti autorizzati.
+//
+// Regola di sicurezza Agonisti (/agonisti):
+//   L'UNICO destinatario ammesso per settore 'agonisti' è Andrea Frovi (cartellino 123819).
 //
 // Variabili d'ambiente (GitHub Secrets):
 //   APPS_SCRIPT_URL     URL HTTPS della Web App Google Apps Script (archivio iscritti)
@@ -6,20 +9,29 @@
 //   SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, MAIL_FROM
 //   SITE_URL            URL pubblico del sito (GitHub Pages), usato nei link delle email
 //   DRY_RUN=1           non invia nulla, stampa soltanto
-//
-// Stato: data/notified.json contiene gli id gara già notificati.
-// Al primo avvio (file assente) tutte le gare correnti vengono marcate come notificate
-// senza inviare email, per non inondare gli iscritti con l'intero calendario.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import nodemailer from 'nodemailer';
-import { comitatoById, formatComitati, normalizeComitati } from '../src/lib/comitati.js';
+import {
+  comitatoById,
+  formatComitati,
+  isAuthorizedAgonisti,
+  normalizeComitati,
+} from '../src/lib/comitati.js';
 import { safeHttpUrl, safeHttpsUrl, stripControlChars } from '../src/lib/security.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const DEFAULT_DATA = path.join(ROOT, 'public', 'data', 'gare.json');
-const DEFAULT_STATE = path.join(ROOT, 'data', 'notified.json');
+const SECTOR_FILES = {
+  master: {
+    dataFile: path.join(ROOT, 'public', 'data', 'gare.json'),
+    stateFile: path.join(ROOT, 'data', 'notified.json'),
+  },
+  agonisti: {
+    dataFile: path.join(ROOT, 'public', 'data', 'gare-agonisti.json'),
+    stateFile: path.join(ROOT, 'data', 'notified-agonisti.json'),
+  },
+};
 
 const EMAIL_RE = /^[^\s@<>,;:"'\\\r\n]+@[^\s@<>,;:"'\\\r\n]+\.[^\s@<>,;:"'\\\r\n]{2,}$/;
 
@@ -64,7 +76,6 @@ export async function fetchSubscribers({ appsScriptUrl, appsScriptToken, fetchIm
   if (!appsScriptToken || String(appsScriptToken).length < 16) {
     throw new Error('APPS_SCRIPT_TOKEN mancante o troppo corto.');
   }
-  // Token inviato nel body POST (e non nella query string) per evitare esposizione nei log URL.
   const res = await fetchImpl(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -88,15 +99,28 @@ function fmtRange(e) {
   return e.dateEnd && e.dateEnd !== e.dateStart ? `${fmtDate(e.dateStart)} → ${fmtDate(e.dateEnd)}` : fmtDate(e.dateStart);
 }
 
-export function buildEmail(sub, events, { appsScriptUrl, siteUrl = '' } = {}) {
+export function isEligibleSubscriberForSector(sub, sector) {
+  const subSector = sub?.settore === 'agonisti' ? 'agonisti' : 'master';
+  if (subSector !== sector) return false;
+  if (sector === 'agonisti') {
+    return isAuthorizedAgonisti(sub);
+  }
+  return true;
+}
+
+export function buildEmail(sub, events, { appsScriptUrl, siteUrl = '', sector = 'master' } = {}) {
+  const isAgonisti = sector === 'agonisti';
+  const sectorTag = isAgonisti ? 'Nino Bixio Agonisti' : 'Nino Bixio Master';
+  const sectorLabel = isAgonisti ? 'Agonisti' : 'Master';
   const matchedComitati = normalizeComitati(events.map((e) => e.comitato));
   const comitatoLabel = formatComitati(matchedComitati.length ? matchedComitati : sub.comitati || sub.comitato) || 'Selezionati';
   const unsubscribe = buildUnsubscribeUrl(appsScriptUrl, sub.id);
-  const safeSite = safeHttpUrl(siteUrl);
+  const rawSite = safeHttpUrl(siteUrl);
+  const safeSite = rawSite && isAgonisti ? `${rawSite.replace(/\/+$/, '')}/agonisti/` : rawSite;
   const firstTitle = stripControlChars(events[0]?.title || '').slice(0, 120);
   const subject = events.length === 1
-    ? `🏊 [Nino Bixio Master] Nuova gara in ${comitatoLabel}: ${firstTitle}`
-    : `🏊 [Nino Bixio Master] ${events.length} nuove gare (${comitatoLabel})`;
+    ? `🏊 [${sectorTag}] Nuova gara in ${comitatoLabel}: ${firstTitle}`
+    : `🏊 [${sectorTag}] ${events.length} nuove gare (${comitatoLabel})`;
 
   const rows = events.map((e) => {
     const finUrl = safeHttpUrl(e.url);
@@ -108,6 +132,7 @@ export function buildEmail(sub, events, { appsScriptUrl, siteUrl = '' } = {}) {
       <div style="font-size:13px;color:#23477c;font-weight:600">${esc(fmtRange(e))}</div>
       <div style="font-size:17px;font-weight:700;color:#192b49;margin:4px 0">${esc(e.title)}</div>
       <div style="font-size:14px;color:#566782">📍 ${esc([e.impianto, e.citta && `${e.citta}${e.provincia ? ` (${e.provincia})` : ''}`].filter(Boolean).join(' – '))}</div>
+      ${e.categorie ? `<div style="font-size:13px;color:#566782">🏅 Categorie: ${esc(e.categorie)}</div>` : ''}
       ${e.vasca ? `<div style="font-size:14px;color:#566782">🏊 ${esc(e.vasca)}${e.tipo ? ` · ${esc(e.tipo)}` : ''}</div>` : ''}
       ${e.iscrizioni ? `<div style="font-size:14px;color:#566782">📝 Iscrizioni: ${esc(e.iscrizioni)}</div>` : ''}
       ${e.organizzazione ? `<div style="font-size:13px;color:#6b7c95">Organizza: ${esc(e.organizzazione)}</div>` : ''}
@@ -123,15 +148,15 @@ export function buildEmail(sub, events, { appsScriptUrl, siteUrl = '' } = {}) {
     <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #dde3ee">
       <tr><td style="background:linear-gradient(135deg,#213961,#192b49);padding:24px;color:#fff">
         <div style="font-size:20px;font-weight:800;letter-spacing:.3px">CANOTTIERI NINO BIXIO 1883 · PIACENZA</div>
-        <div style="opacity:.88;margin-top:4px">Alert Gare Nuoto Master · ${esc(comitatoLabel)}</div>
+        <div style="opacity:.88;margin-top:4px">Alert Gare Nuoto ${sectorLabel} · ${esc(comitatoLabel)}</div>
       </td></tr>
       <tr><td style="padding:20px 24px">
-        <p style="color:#14223a">Ciao ${esc(sub.nome)},<br>sono state pubblicate sul sito FIN ${events.length === 1 ? 'una nuova gara' : `${events.length} nuove gare`} del circuito Supermaster nei comitati che segui:</p>
+        <p style="color:#14223a">Ciao ${esc(sub.nome)},<br>sono state pubblicate sul sito FIN ${events.length === 1 ? 'una nuova gara' : `${events.length} nuove gare`} (${sectorLabel}) nei comitati che segui:</p>
         <table width="100%" cellpadding="0" cellspacing="0">${rows}</table>
-        ${safeSite ? `<p style="margin-top:20px"><a href="${esc(safeSite)}" style="background:#192b49;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">Vedi calendario squadra</a></p>` : ''}
+        ${safeSite ? `<p style="margin-top:20px"><a href="${esc(safeSite)}" style="background:#192b49;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">Vedi calendario ${sectorLabel}</a></p>` : ''}
       </td></tr>
       <tr><td style="padding:16px 24px;background:#f5f7fb;font-size:12px;color:#566782">
-        Servizio riservato agli atleti Nuoto Master della Canottieri Nino Bixio 1883. Dati tratti da federnuoto.it: verifica sempre la scheda ufficiale.<br>
+        Servizio riservato alla squadra Nuoto ${sectorLabel} della Canottieri Nino Bixio 1883. Dati tratti da federnuoto.it: verifica sempre la scheda ufficiale.<br>
         ${unsubscribe ? `<a href="${esc(unsubscribe)}" style="color:#566782">Annulla l'iscrizione</a>` : ''}
       </td></tr>
     </table>
@@ -139,7 +164,7 @@ export function buildEmail(sub, events, { appsScriptUrl, siteUrl = '' } = {}) {
 
   const text = [
     `Ciao ${stripControlChars(sub.nome)},`,
-    `nuove gare master pubblicate (${comitatoLabel}):`,
+    `nuove gare ${sectorLabel.toLowerCase()} pubblicate (${comitatoLabel}):`,
     '',
     ...events.map((e) => `- [${comitatoById(e.comitato)?.nome || e.comitato}] ${fmtRange(e)} | ${e.title} | ${e.citta || ''} ${e.provincia ? `(${e.provincia})` : ''}\n  ${safeHttpUrl(e.url) || ''}`),
     '',
@@ -150,10 +175,12 @@ export function buildEmail(sub, events, { appsScriptUrl, siteUrl = '' } = {}) {
   return { subject, html, text, unsubscribe };
 }
 
-export async function runNotify({
+export async function runNotifySector({
+  sector = 'master',
   env = process.env,
-  dataFile = DEFAULT_DATA,
-  stateFile = DEFAULT_STATE,
+  dataFile = SECTOR_FILES[sector]?.dataFile,
+  stateFile = SECTOR_FILES[sector]?.stateFile,
+  subscribers = null,
   fetchImpl = fetch,
   createTransport = nodemailer.createTransport.bind(nodemailer),
   today = new Date().toISOString().slice(0, 10),
@@ -162,36 +189,40 @@ export async function runNotify({
   const SITE_URL = (env.SITE_URL || '').replace(/\/$/, '');
 
   const data = await readJson(dataFile, null);
-  if (!data?.events) throw new Error('public/data/gare.json mancante: esegui prima lo scraper.');
+  if (!data?.events) {
+    console.log(`[notify:${sector}] file dati assente, salto.`);
+    return { status: 'missing-data', sent: 0, failed: 0 };
+  }
 
   const configured = env.APPS_SCRIPT_URL && env.APPS_SCRIPT_TOKEN && (DRY_RUN || (env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASS));
   if (!configured) {
-    console.log('[notify] configurazione email/iscritti assente: salto l\'invio (nessuna modifica allo stato).');
+    console.log(`[notify:${sector}] configurazione email/iscritti assente: salto l'invio (nessuna modifica allo stato).`);
     return { status: 'unconfigured', sent: 0, failed: 0 };
   }
 
   const state = await readJson(stateFile, null);
   if (!state) {
     await saveState(stateFile, { initializedAt: new Date().toISOString(), ids: data.events.map((e) => e.id) });
-    console.log(`[notify] primo avvio: marcate ${data.events.length} gare come già note, nessuna email inviata.`);
+    console.log(`[notify:${sector}] primo avvio: marcate ${data.events.length} gare come già note, nessuna email inviata.`);
     return { status: 'initialized', sent: 0, failed: 0 };
   }
 
   const known = new Set(state.ids);
   const nuove = data.events.filter((e) => !known.has(e.id));
   const daNotificare = nuove.filter((e) => e.comitato && (e.dateEnd || e.dateStart) >= today);
-  console.log(`[notify] gare nuove: ${nuove.length}, da notificare: ${daNotificare.length}`);
+  console.log(`[notify:${sector}] gare nuove: ${nuove.length}, da notificare: ${daNotificare.length}`);
 
   let sent = 0;
   let failed = 0;
 
   if (daNotificare.length) {
-    const subscribers = await fetchSubscribers({
+    const allSubs = subscribers || await fetchSubscribers({
       appsScriptUrl: env.APPS_SCRIPT_URL,
       appsScriptToken: env.APPS_SCRIPT_TOKEN,
       fetchImpl,
     });
-    console.log(`[notify] iscritti attivi: ${subscribers.length}`);
+    const eligibleSubs = allSubs.filter((s) => isEligibleSubscriberForSector(s, sector));
+    console.log(`[notify:${sector}] iscritti idonei: ${eligibleSubs.length}`);
 
     const port = Number(env.SMTP_PORT || 465);
     if (!Number.isInteger(port) || port < 1 || port > 65535) {
@@ -206,18 +237,18 @@ export async function runNotify({
       disableUrlAccess: true,
     });
 
-    for (const sub of subscribers) {
+    for (const sub of eligibleSubs) {
       if (!isValidEmail(sub?.email)) {
         failed++;
-        console.warn('[notify] email iscritto non valida, salto.');
+        console.warn(`[notify:${sector}] email iscritto non valida, salto.`);
         continue;
       }
       const subComitati = new Set(normalizeComitati(sub.comitati?.length ? sub.comitati : sub.comitato));
       const events = daNotificare.filter((e) => subComitati.has(e.comitato));
       if (!events.length) continue;
-      const mail = buildEmail(sub, events, { appsScriptUrl: env.APPS_SCRIPT_URL, siteUrl: SITE_URL });
+      const mail = buildEmail(sub, events, { appsScriptUrl: env.APPS_SCRIPT_URL, siteUrl: SITE_URL, sector });
       if (DRY_RUN) {
-        console.log(`[notify][dry-run] -> ${sub.email}: ${mail.subject}`);
+        console.log(`[notify:${sector}][dry-run] -> ${sub.email}: ${mail.subject}`);
         sent++;
         continue;
       }
@@ -235,22 +266,29 @@ export async function runNotify({
         await new Promise((r) => setTimeout(r, 400));
       } catch (err) {
         failed++;
-        console.error(`[notify] invio fallito per iscritto ${sub.id || '?'}: ${err.message}`);
+        console.error(`[notify:${sector}] invio fallito per iscritto ${sub.id || '?'}: ${err.message}`);
       }
     }
-    console.log(`[notify] email inviate: ${sent}, fallite: ${failed}`);
+    console.log(`[notify:${sector}] email inviate: ${sent}, fallite: ${failed}`);
   }
 
   if (DRY_RUN) {
-    console.log('[notify][dry-run] stato non aggiornato.');
+    console.log(`[notify:${sector}][dry-run] stato non aggiornato.`);
     return { status: 'dry-run', sent, failed };
   }
 
-  // Tutte le gare nuove (anche passate o senza comitato) vengono marcate come note.
   state.ids.push(...nuove.map((e) => e.id));
   state.lastRun = new Date().toISOString();
   await saveState(stateFile, state);
   return { status: 'sent', sent, failed };
+}
+
+export async function runNotify(options = {}) {
+  const results = {};
+  for (const sector of ['master', 'agonisti']) {
+    results[sector] = await runNotifySector({ ...options, sector });
+  }
+  return results;
 }
 
 const isEntrypoint = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;

@@ -2,7 +2,10 @@
 
 Web app statica in **React (JSX)** pensata per essere pubblicata gratis su **GitHub Pages** (senza server dedicato):
 
-- **Calendario sempre aggiornato**: uno script Node eseguito periodicamente da **GitHub Actions** interroga l'endpoint ufficiale del Circuito Supermaster sul sito **FIN (`federnuoto.it`)** e salva i dati in `public/data/gare.json`.
+- **Calendario sempre aggiornato (Master + Agonisti)**: uno script Node eseguito periodicamente da **GitHub Actions** interroga gli endpoint ufficiali FIN (`federnuoto.it`) sia per il **Circuito Supermaster** (`public/data/gare.json`, su `/`) sia per l'**Attività Agonistica** (`public/data/gare-agonisti.json`, su `/agonisti/`).
+- **Accesso riservato**:
+  - **Master (`/`)**: verifica cartellino + cognome sul foglio privato `Tesserati` (Canottieri Nino Bixio 1883).
+  - **Agonisti (`/agonisti/`)**: ricezione alert email riservata esclusivamente ad **Andrea Frovi** (`123819`).
 - **Filtri e calendario personale**: filtro per comitato regionale, vasca (25m / 50m), tipologia (Federale / Extrafederale), ricerca testuale, scheda FIN, locandina PDF, mappa e download file `.ics` per il proprio calendario.
 - **Iscrizione alert via email (serverless)**: gli utenti si iscrivono con *Nome, Cognome, Email* e *Comitato regionale* tramite **Google Apps Script + Google Sheets** con conferma double opt-in e link di disiscrizione automatica.
 - **Invio email automatico**: ad ogni aggiornamento, se compaiono nuove gare nel calendario FIN, GitHub Actions invia una email agli iscritti attivi del comitato regionale interessato.

@@ -44,6 +44,7 @@ export default function GaraCard({ ev, isNew }) {
 
         {open && (
           <dl className="gara-details">
+            {ev.categorie && (<><dt>Categorie</dt><dd>{ev.categorie}</dd></>)}
             {ev.impianto && (<><dt>Impianto</dt><dd>{titleCase(ev.impianto)}</dd></>)}
             {ev.indirizzo && (<><dt>Indirizzo</dt><dd>{ev.indirizzo}</dd></>)}
             {ev.organizzazione && (<><dt>Organizzazione</dt><dd>{titleCase(ev.organizzazione)}</dd></>)}

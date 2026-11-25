@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
-import { CLUB_INFO, COMITATI, formatComitati, isValidCartellino, normalizeComitati } from '../lib/comitati.js';
-import { isSubscribeConfigured, subscribe } from '../lib/api.js';
+import {
+  AGONISTI_AUTHORIZED,
+  CLUB_INFO,
+  COMITATI,
+  formatComitati,
+  isAuthorizedAgonisti,
+  isValidCartellino,
+  normalizeComitati,
+} from '../lib/comitati.js';
+import { assetUrl, isSubscribeConfigured, subscribe } from '../lib/api.js';
 
 const INITIAL_COMITATI = [...CLUB_INFO.defaultComitati];
 const EMPTY = {
@@ -13,7 +21,8 @@ const EMPTY = {
   website: '',
 };
 
-export default function SubscribeForm({ defaultComitato, onClose }) {
+export default function SubscribeForm({ defaultComitato, sector = 'master', onClose }) {
+  const isAgonisti = sector === 'agonisti';
   const [form, setForm] = useState(() => ({
     ...EMPTY,
     comitati: defaultComitato
@@ -63,17 +72,25 @@ export default function SubscribeForm({ defaultComitato, onClose }) {
       setStatus({ state: 'error', message: 'Inserisci un numero di cartellino FIN valido (4–10 cifre).' });
       return;
     }
+    if (isAgonisti && !isAuthorizedAgonisti({ nome, cognome, cartellino })) {
+      setStatus({
+        state: 'error',
+        message: `Gli alert per la sezione Agonisti sono riservati esclusivamente ad ${AGONISTI_AUTHORIZED.nome} ${AGONISTI_AUTHORIZED.cognome} (${AGONISTI_AUTHORIZED.cartellino}).`,
+      });
+      return;
+    }
     if (!form.comitati.length) {
       setStatus({ state: 'error', message: 'Seleziona almeno un comitato regionale.' });
       return;
     }
     if (!form.privacy) {
-      setStatus({ state: 'error', message: 'Accetta l\'informativa privacy per proseguire.' });
+      setStatus({ state: 'error', message: "Accetta l'informativa privacy per proseguire." });
       return;
     }
     setStatus({ state: 'loading', message: '' });
     try {
       const res = await subscribe({
+        settore: sector,
         nome,
         cognome,
         email,
@@ -101,10 +118,16 @@ export default function SubscribeForm({ defaultComitato, onClose }) {
   return (
     <div className="subscribe" id="iscriviti">
       <div className="subscribe-head">
-        <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" width="34" height="34" />
+        <img src={assetUrl('favicon.svg')} alt="" width="34" height="34" />
         <div>
-          <h3 id="subscribe-modal-title">Alert email atleti Nino Bixio</h3>
-          <p className="muted small">Riservato ai tesserati {CLUB_INFO.nome} (cod. FIN {CLUB_INFO.codiceFin})</p>
+          <h3 id="subscribe-modal-title">
+            {isAgonisti ? 'Alert email Agonisti Nino Bixio' : 'Alert email atleti Nino Bixio'}
+          </h3>
+          <p className="muted small">
+            {isAgonisti
+              ? `Riservato esclusivamente ad ${AGONISTI_AUTHORIZED.nome} ${AGONISTI_AUTHORIZED.cognome} (cartellino ${AGONISTI_AUTHORIZED.cartellino})`
+              : `Riservato ai tesserati ${CLUB_INFO.nome} (cod. FIN ${CLUB_INFO.codiceFin})`}
+          </p>
         </div>
       </div>
 
@@ -119,7 +142,7 @@ export default function SubscribeForm({ defaultComitato, onClose }) {
           ✅ {status.message}
           <div className="modal-success-actions">
             <button type="button" className="btn btn-ghost btn-sm" onClick={() => setStatus({ state: 'idle', message: '' })}>
-              Iscrivi un'altra persona
+              {isAgonisti ? 'Aggiorna preferenze' : "Iscrivi un'altra persona"}
             </button>
             {onClose && (
               <button type="button" className="btn btn-primary btn-sm" onClick={onClose}>
@@ -133,11 +156,25 @@ export default function SubscribeForm({ defaultComitato, onClose }) {
           <div className="two">
             <label className="field">
               <span>Nome</span>
-              <input required maxLength={60} autoComplete="given-name" value={form.nome} onChange={set('nome')} />
+              <input
+                required
+                maxLength={60}
+                autoComplete="given-name"
+                placeholder={isAgonisti ? AGONISTI_AUTHORIZED.nome : ''}
+                value={form.nome}
+                onChange={set('nome')}
+              />
             </label>
             <label className="field">
               <span>Cognome</span>
-              <input required maxLength={60} autoComplete="family-name" value={form.cognome} onChange={set('cognome')} />
+              <input
+                required
+                maxLength={60}
+                autoComplete="family-name"
+                placeholder={isAgonisti ? AGONISTI_AUTHORIZED.cognome : ''}
+                value={form.cognome}
+                onChange={set('cognome')}
+              />
             </label>
           </div>
           <div className="two two-email">
@@ -153,8 +190,12 @@ export default function SubscribeForm({ defaultComitato, onClose }) {
                 inputMode="numeric"
                 pattern="\d{4,10}"
                 maxLength={10}
-                placeholder="es. 156321"
-                title={`Numero di cartellino verificato tra i tesserati ${CLUB_INFO.nome}`}
+                placeholder={isAgonisti ? AGONISTI_AUTHORIZED.cartellino : 'es. 156321'}
+                title={
+                  isAgonisti
+                    ? `Riservato al cartellino ${AGONISTI_AUTHORIZED.cartellino}`
+                    : `Numero di cartellino verificato tra i tesserati ${CLUB_INFO.nome}`
+                }
                 value={form.cartellino}
                 onChange={(e) => setForm((f) => ({ ...f, cartellino: e.target.value.replace(/\D+/g, '') }))}
               />

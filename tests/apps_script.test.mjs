@@ -28,11 +28,15 @@ function loadAppsScript({ rosterRows = null } = {}) {
     return {
       appendRow(row) { arr.push([...row]); },
       setFrozenRows() {},
+      getLastColumn() { return arr[0]?.length || 0; },
       getDataRange() { return { getValues: () => arr.map((r) => [...r]) }; },
-      getRange(rowIdx) {
+      getRange(rowIdx, colIdx) {
         return {
           setValues(vals) {
-            arr[rowIdx - 1] = [...vals[0]];
+            if (!arr[rowIdx - 1]) arr[rowIdx - 1] = [];
+            for (let c = 0; c < vals[0].length; c++) {
+              arr[rowIdx - 1][(colIdx ? colIdx - 1 : 0) + c] = vals[0][c];
+            }
           },
         };
       },
@@ -144,18 +148,18 @@ test('Code.gs verifica cartellino Nino Bixio, supporta più comitati, previene f
   assert.deepEqual(sub, { ok: true, status: 'pending' });
   assert.equal(gs.sentEmails.length, 1);
   // Intestazione + 1 riga; le celle con '=' o '+' devono iniziare con "'"
-  assert.equal(gs.sheets.Iscritti[1][1].startsWith("'="), true);
-  assert.equal(gs.sheets.Iscritti[1][2].startsWith("'+"), true);
-  assert.equal(gs.sheets.Iscritti[1][5], 'verificato');
-  assert.equal(gs.sheets.Iscritti[1][6], 'lombardia,emilia-romagna');
-  assert.equal(gs.sheets.Iscritti[1][7], 'pending');
+  assert.equal(gs.sheets.Iscritti[1][2].startsWith("'="), true);
+  assert.equal(gs.sheets.Iscritti[1][3].startsWith("'+"), true);
+  assert.equal(gs.sheets.Iscritti[1][6], 'verificato');
+  assert.equal(gs.sheets.Iscritti[1][7], 'lombardia,emilia-romagna');
+  assert.equal(gs.sheets.Iscritti[1][8], 'pending');
 
   // Conferma link email e verifica unescape di safeCell_ su list
   const id = gs.sheets.Iscritti[1][0];
   const confirmPage = gs.get({ action: 'confirm', id });
   assert.match(confirmPage.html, /Iscrizione confermata/);
   assert.match(confirmPage.html, /Lombardia, Emilia-Romagna/);
-  assert.equal(gs.sheets.Iscritti[1][7], 'active');
+  assert.equal(gs.sheets.Iscritti[1][8], 'active');
 
   const initialList = gs.post({ action: 'list', token: gs.props.ADMIN_TOKEN });
   assert.equal(initialList.subscribers[0].cognome, '+Rossi');
@@ -172,7 +176,7 @@ test('Code.gs verifica cartellino Nino Bixio, supporta più comitati, previene f
     privacy: true,
   });
   assert.deepEqual(hijackAttempt, { ok: true, status: 'update_pending' });
-  assert.equal(gs.sheets.Iscritti[1][6], 'lombardia,emilia-romagna');
+  assert.equal(gs.sheets.Iscritti[1][7], 'lombardia,emilia-romagna');
 
   // Richiesta aggiornamento reale con conferma via token
   gs.cacheStore.clear();
@@ -192,7 +196,7 @@ test('Code.gs verifica cartellino Nino Bixio, supporta più comitati, previene f
 
   const updConfirm = gs.get({ action: 'confirm_update', token: decodeURIComponent(tokenMatch[1]) });
   assert.match(updConfirm.html, /Preferenze aggiornate/);
-  assert.equal(gs.sheets.Iscritti[1][6], 'lombardia,veneto');
+  assert.equal(gs.sheets.Iscritti[1][7], 'lombardia,veneto');
 
   // List richiede ADMIN_TOKEN valido nel body POST
   assert.equal(gs.post({ action: 'list', token: 'wrong-token' }).ok, false);
@@ -205,7 +209,7 @@ test('Code.gs verifica cartellino Nino Bixio, supporta più comitati, previene f
   // Disiscrizione
   const unsubPage = gs.get({ action: 'unsubscribe', id });
   assert.match(unsubPage.html, /Iscrizione annullata/);
-  assert.equal(gs.sheets.Iscritti[1][7], 'unsubscribed');
+  assert.equal(gs.sheets.Iscritti[1][8], 'unsubscribed');
   assert.equal(gs.post({ action: 'list', token: gs.props.ADMIN_TOKEN }).subscribers.length, 0);
 });
 
@@ -276,4 +280,54 @@ test('Code.gs blocca payload oversize, ID malformati e tentativi brute-force sul
   });
   assert.equal(blocked.ok, false);
   assert.match(blocked.error, /Troppi tentativi/);
+});
+
+test('Code.gs settore agonisti consente iscrizione esclusivamente ad Andrea Frovi (123819)', () => {
+  const gs = loadAppsScript();
+
+  const deniedOther = gs.post({
+    action: 'subscribe',
+    settore: 'agonisti',
+    nome: 'Mario',
+    cognome: 'Rossi',
+    email: 'mario@example.com',
+    cartellino: '123456',
+    comitati: ['lombardia'],
+    privacy: true,
+  });
+  assert.equal(deniedOther.ok, false);
+  assert.match(deniedOther.error, /Andrea Frovi/);
+
+  const deniedWrongCard = gs.post({
+    action: 'subscribe',
+    settore: 'agonisti',
+    nome: 'Andrea',
+    cognome: 'Frovi',
+    email: 'andrea@example.com',
+    cartellino: '999999',
+    comitati: ['lombardia'],
+    privacy: true,
+  });
+  assert.equal(deniedWrongCard.ok, false);
+
+  const okFrovi = gs.post({
+    action: 'subscribe',
+    settore: 'agonisti',
+    nome: 'Andrea',
+    cognome: 'Frovi',
+    email: 'andrea.frovi@example.com',
+    cartellino: '123819',
+    comitati: ['lombardia', 'emilia-romagna'],
+    privacy: true,
+  });
+  assert.deepEqual(okFrovi, { ok: true, status: 'pending' });
+  const id = gs.sheets.Iscritti[1][0];
+  const conf = gs.get({ action: 'confirm', id });
+  assert.match(conf.html, /Iscrizione confermata/);
+  assert.match(conf.html, /\/agonisti\//);
+
+  const listRes = gs.post({ action: 'list', token: gs.props.ADMIN_TOKEN });
+  assert.equal(listRes.subscribers.length, 1);
+  assert.equal(listRes.subscribers[0].settore, 'agonisti');
+  assert.equal(listRes.subscribers[0].cartellino, '123819');
 });

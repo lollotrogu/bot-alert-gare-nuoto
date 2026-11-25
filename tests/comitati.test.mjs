@@ -1,10 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  AGONISTI_AUTHORIZED,
   COMITATI,
   comitatoById,
   comitatoFromProvincia,
+  comitatoFromText,
   formatComitati,
+  isAuthorizedAgonisti,
   isValidCartellino,
   normalizeComitati,
   parseLocalita,
@@ -48,4 +51,10 @@ test('normalizeComitati, formatComitati e isValidCartellino validano multi-selez
   assert.equal(isValidCartellino('1058185'), true);
   assert.equal(isValidCartellino('123'), false);
   assert.equal(isValidCartellino('abc123'), false);
+
+  assert.equal(comitatoFromText('COMITATO REGIONALE LIGURIA'), 'liguria');
+  assert.equal(isAuthorizedAgonisti(AGONISTI_AUTHORIZED), true);
+  assert.equal(isAuthorizedAgonisti({ nome: 'andrea', cognome: 'FROVI', cartellino: '00123819' }), true);
+  assert.equal(isAuthorizedAgonisti({ nome: 'Mario', cognome: 'Rossi', cartellino: '123819' }), false);
+  assert.equal(isAuthorizedAgonisti({ nome: 'Andrea', cognome: 'Frovi', cartellino: '999999' }), false);
 });

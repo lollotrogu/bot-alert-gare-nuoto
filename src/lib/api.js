@@ -6,6 +6,17 @@ export const APPS_SCRIPT_URL = safeHttpsUrl(import.meta.env.VITE_APPS_SCRIPT_URL
 
 export const isSubscribeConfigured = () => Boolean(APPS_SCRIPT_URL);
 
+export function detectSector() {
+  if (typeof window === 'undefined') return 'master';
+  return /\/agonisti\/?$/.test(window.location.pathname) ? 'agonisti' : 'master';
+}
+
+export function assetUrl(relPath) {
+  const clean = String(relPath || '').replace(/^\/+/, '');
+  const prefix = detectSector() === 'agonisti' ? '../' : './';
+  return `${prefix}${clean}`;
+}
+
 export async function subscribe(payload) {
   if (!APPS_SCRIPT_URL) throw new Error('Il servizio di iscrizione non è ancora configurato.');
   // text/plain evita la richiesta preflight CORS, non supportata da Apps Script.
@@ -26,8 +37,9 @@ export async function subscribe(payload) {
   return json;
 }
 
-export async function loadGare() {
-  const res = await fetch(`${import.meta.env.BASE_URL}data/gare.json`, {
+export async function loadGare(sector = 'master') {
+  const file = sector === 'agonisti' ? 'data/gare-agonisti.json' : 'data/gare.json';
+  const res = await fetch(assetUrl(file), {
     cache: 'no-cache',
     signal: AbortSignal.timeout(15000),
   });

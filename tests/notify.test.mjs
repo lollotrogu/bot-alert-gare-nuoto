@@ -6,8 +6,9 @@ import path from 'node:path';
 import {
   buildEmail,
   fetchSubscribers,
+  isEligibleSubscriberForSector,
   isValidEmail,
-  runNotify,
+  runNotifySector,
   sanitizeAddressName,
 } from '../scripts/notify.mjs';
 
@@ -108,7 +109,7 @@ test('runNotify inizializza notified.json al primo avvio e poi invia solo per co
     };
 
     // Primo avvio: inizializza senza inviare email
-    const first = await runNotify({ env, dataFile, stateFile, today: '2026-11-25' });
+    const first = await runNotifySector({ sector: 'master', env, dataFile, stateFile, today: '2026-11-25' });
     assert.equal(first.status, 'initialized');
     assert.equal(first.sent, 0);
 
@@ -125,7 +126,8 @@ test('runNotify inizializza notified.json al primo avvio e poi invia solo per co
     );
 
     const sentMails = [];
-    const second = await runNotify({
+    const second = await runNotifySector({
+      sector: 'master',
       env,
       dataFile,
       stateFile,
@@ -135,8 +137,9 @@ test('runNotify inizializza notified.json al primo avvio e poi invia solo per co
           JSON.stringify({
             ok: true,
             subscribers: [
-              { id: 's1', nome: 'Luca', cognome: 'Bianchi', email: 'luca@example.com', comitati: ['veneto', 'lombardia'] },
-              { id: 's2', nome: 'Anna', cognome: 'Verdi', email: 'anna@example.com', comitati: ['lombardia'] },
+              { id: 's1', settore: 'master', nome: 'Luca', cognome: 'Bianchi', email: 'luca@example.com', comitati: ['veneto', 'lombardia'] },
+              { id: 's2', settore: 'master', nome: 'Anna', cognome: 'Verdi', email: 'anna@example.com', comitati: ['lombardia'] },
+              { id: 's3', settore: 'agonisti', nome: 'Andrea', cognome: 'Frovi', cartellino: '123819', email: 'frovi@example.com', comitati: ['veneto'] },
             ],
           })
         ),
@@ -152,6 +155,49 @@ test('runNotify inizializza notified.json al primo avvio e poi invia solo per co
     assert.equal(sentMails.length, 1);
     assert.deepEqual(sentMails[0].to, { name: 'Luca Bianchi', address: 'luca@example.com' });
     assert.match(sentMails[0].subject, /Nuova Veneto/);
+
+    // Settore agonisti: invia ESCLUSIVAMENTE ad Andrea Frovi (123819) anche se nel JSON arrivano altri utenti
+    assert.equal(
+      isEligibleSubscriberForSector({ settore: 'agonisti', nome: 'Andrea', cognome: 'Frovi', cartellino: '123819' }, 'agonisti'),
+      true
+    );
+    assert.equal(
+      isEligibleSubscriberForSector({ settore: 'agonisti', nome: 'Altro', cognome: 'Atleta', cartellino: '999999' }, 'agonisti'),
+      false
+    );
+
+    const agoData = path.join(tmp, 'gare-agonisti.json');
+    const agoState = path.join(tmp, 'notified-agonisti.json');
+    await fs.writeFile(agoState, JSON.stringify({ ids: [] }));
+    await fs.writeFile(
+      agoData,
+      JSON.stringify({
+        events: [
+          { id: '201', title: 'Trofeo Agonisti Lodi', dateStart: '2027-01-15', dateEnd: '2027-01-15', comitato: 'lombardia', url: 'https://www.federnuoto.it/201' },
+        ],
+      })
+    );
+    const agoMails = [];
+    const agoRes = await runNotifySector({
+      sector: 'agonisti',
+      env,
+      dataFile: agoData,
+      stateFile: agoState,
+      today: '2026-11-25',
+      subscribers: [
+        { id: 'a1', settore: 'agonisti', nome: 'Andrea', cognome: 'Frovi', cartellino: '123819', email: 'frovi@example.com', comitati: ['lombardia'] },
+        { id: 'a2', settore: 'agonisti', nome: 'Intruso', cognome: 'Test', cartellino: '555555', email: 'intruso@example.com', comitati: ['lombardia'] },
+      ],
+      createTransport: () => ({
+        sendMail: async (msg) => {
+          agoMails.push(msg);
+        },
+      }),
+    });
+    assert.equal(agoRes.sent, 1);
+    assert.equal(agoMails.length, 1);
+    assert.deepEqual(agoMails[0].to, { name: 'Andrea Frovi', address: 'frovi@example.com' });
+    assert.match(agoMails[0].subject, /\[Nino Bixio Agonisti\]/);
 
     const savedState = JSON.parse(await fs.readFile(stateFile, 'utf8'));
     assert.deepEqual(savedState.ids, ['100', '101', '102']);

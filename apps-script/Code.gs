@@ -1,29 +1,33 @@
 /**
- * Alert Gare Nuoto Master - Canottieri Nino Bixio 1883 (Piacenza, cod. FIN 153625)
+ * Alert Gare Nuoto Master & Agonisti - Canottieri Nino Bixio 1883 (Piacenza, cod. FIN 153625)
  * Archivio iscritti e verifica tesserati su Google Sheets.
  *
  * Web App Google Apps Script gratuita collegata a un Foglio Google. Gestisce:
- *   POST  {action:'subscribe', nome, cognome, email, cartellino, comitati, privacy} -> verifica + double opt-in
- *   POST  {action:'list', token}                                                     -> elenco iscritti attivi (GitHub Actions)
- *   GET   ?action=confirm&id=...                                                     -> conferma iscrizione
- *   GET   ?action=confirm_update&token=...                                           -> conferma modifica dati/comitati
- *   GET   ?action=unsubscribe&id=...                                                 -> disiscrizione
+ *   POST  {action:'subscribe', settore, nome, cognome, email, cartellino, comitati, privacy} -> verifica + double opt-in
+ *   POST  {action:'list', token}                                                              -> elenco iscritti attivi (GitHub Actions)
+ *   GET   ?action=confirm&id=...                                                              -> conferma iscrizione
+ *   GET   ?action=confirm_update&token=...                                                    -> conferma modifica dati/comitati
+ *   GET   ?action=unsubscribe&id=...                                                          -> disiscrizione
  *
  * Fogli creati automaticamente nello Spreadsheet:
  *   - "Iscritti": elenco atleti iscritti agli alert
- *   - "Tesserati": elenco cartellini della Canottieri Nino Bixio 1883 (esportato da portale.federnuoto.it)
+ *   - "Tesserati": elenco cartellini Master della Canottieri Nino Bixio 1883
+ *
+ * Regola settore "agonisti" (/agonisti):
+ *   L'UNICO autorizzato a iscriversi e ricevere email per Agonisti è Andrea Frovi (cartellino 123819).
  *
  * Proprietà dello script (Impostazioni progetto -> Proprietà script):
  *   ADMIN_TOKEN     stringa casuale >= 24 caratteri, uguale al secret APPS_SCRIPT_TOKEN su GitHub (obbligatoria)
  *   SITE_URL        URL https:// del sito su GitHub Pages (facoltativa)
  *   WEBAPP_URL      URL /exec della Web App (facoltativa)
- *   REQUIRE_ROSTER  imposta "true" per bloccare le iscrizioni finché il foglio "Tesserati" è vuoto (facoltativa)
+ *   REQUIRE_ROSTER  imposta "false" per disabilitare temporaneamente il controllo su "Tesserati" (facoltativa)
  */
 
 var SHEET_NAME = 'Iscritti';
 var ROSTER_SHEET_NAME = 'Tesserati';
-var HEADERS = ['id', 'nome', 'cognome', 'email', 'cartellino', 'cartellino_stato', 'comitati', 'stato', 'creato', 'confermato', 'aggiornato'];
+var HEADERS = ['id', 'settore', 'nome', 'cognome', 'email', 'cartellino', 'cartellino_stato', 'comitati', 'stato', 'creato', 'confermato', 'aggiornato'];
 var ROSTER_HEADERS = ['cartellino', 'cognome', 'nome'];
+var AGONISTI_ALLOWED = { nome: 'andrea', cognome: 'frovi', cartellino: '123819' };
 var COMITATI = {
   'abruzzo': 'Abruzzo', 'basilicata': 'Basilicata', 'calabria': 'Calabria', 'campania': 'Campania',
   'emilia-romagna': 'Emilia-Romagna', 'friuli-venezia-giulia': 'Friuli-Venezia Giulia', 'lazio': 'Lazio',
@@ -69,7 +73,7 @@ function cleanText_(s, maxLen) {
     .slice(0, maxLen || 120);
 }
 
-/** Normalizza per confronti di cognome (minuscolo, senza accenti, spazi singoli). */
+/** Normalizza per confronti di nome/cognome (minuscolo, senza accenti, spazi singoli). */
 function normCompare_(s) {
   return cleanText_(s, 80)
     .normalize('NFD')
@@ -95,14 +99,14 @@ function safeHttpUrl_(raw) {
   return /^https?:\/\/[^\s"'<>]+$/i.test(s) ? s : '';
 }
 
-function emailKey_(email) {
-  var bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, email, Utilities.Charset.UTF_8);
+function emailKey_(email, settore) {
+  var bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, (settore || 'master') + ':' + email, Utilities.Charset.UTF_8);
   return 'rl_' + bytes.map(function (b) { return ('0' + (b & 0xff).toString(16)).slice(-2); }).join('').slice(0, 32);
 }
 
-function canSendMail_(email) {
+function canSendMail_(email, settore) {
   var cache = CacheService.getScriptCache();
-  var key = emailKey_(email);
+  var key = emailKey_(email, settore);
   if (cache.get(key)) return false;
   cache.put(key, '1', RATE_LIMIT_SECONDS);
   return true;
@@ -147,6 +151,14 @@ function normCard_(val) {
   return digits.replace(/^0+/, '') || '0';
 }
 
+function isAuthorizedAgonisti_(nome, cognome, cartellino) {
+  return (
+    normCompare_(nome) === AGONISTI_ALLOWED.nome &&
+    normCompare_(cognome) === AGONISTI_ALLOWED.cognome &&
+    normCard_(cartellino) === AGONISTI_ALLOWED.cartellino
+  );
+}
+
 function sheet_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName(SHEET_NAME);
@@ -170,13 +182,42 @@ function rosterSheet_() {
   return sh;
 }
 
+/** Restituisce le intestazioni reali del foglio Iscritti e aggiunge eventuali colonne mancanti (es. settore). */
+function getSheetHeaders_(sh) {
+  var lastCol = sh.getLastColumn ? sh.getLastColumn() : 0;
+  var firstRow = sh.getDataRange().getValues()[0] || [];
+  var headers = firstRow.slice();
+  if (!headers.length) {
+    sh.appendRow(HEADERS);
+    return HEADERS.slice();
+  }
+  for (var i = 0; i < HEADERS.length; i++) {
+    if (headers.indexOf(HEADERS[i]) < 0) {
+      headers.push(HEADERS[i]);
+      if (sh.getRange && lastCol >= 0) {
+        sh.getRange(1, headers.length, 1, 1).setValues([[HEADERS[i]]]);
+      }
+    }
+  }
+  return headers;
+}
+
 /**
  * Verifica che il numero di cartellino appartenga ai tesserati della Canottieri Nino Bixio 1883.
- * Supporta nel foglio "Tesserati" sia il formato pulito (cartellino | cognome | nome)
- * sia l'export incollato da portale.federnuoto.it (anche con colonna iniziale "foto").
- * Di default richiede il riscontro nel foglio "Tesserati" (impostare REQUIRE_ROSTER=false solo per test).
+ * Per settore 'agonisti': l'UNICO autorizzato è Andrea Frovi (123819).
+ * Per settore 'master': verifica contro il foglio privato "Tesserati".
  */
-function verifyCartellino_(cartellino, cognome) {
+function verifyCartellino_(settore, cartellino, cognome, nome) {
+  if (settore === 'agonisti') {
+    if (!isAuthorizedAgonisti_(nome, cognome, cartellino)) {
+      return {
+        ok: false,
+        error: 'Gli alert per la sezione Agonisti sono riservati esclusivamente ad Andrea Frovi (cartellino 123819).'
+      };
+    }
+    return { ok: true, stato: 'verificato_agonisti' };
+  }
+
   var sh = rosterSheet_();
   var values = sh.getDataRange().getValues();
   var headers = (values[0] || []).map(function (h) { return normCompare_(h); });
@@ -190,7 +231,6 @@ function verifyCartellino_(cartellino, cognome) {
   var roster = [];
   for (var i = 1; i < values.length; i++) {
     var row = values[i];
-    // Nell'export HTML del gestionale FIN alcune righe hanno una colonna iniziale "foto"
     var offset = (hasCfPrefix && String(row[0] || '').trim().toLowerCase() === 'foto') ? 1 : 0;
     var card = normCard_(row[cardIdx + offset]);
     if (!card) continue;
@@ -237,7 +277,7 @@ function verifyCartellino_(cartellino, cognome) {
 function rows_() {
   var sh = sheet_();
   var values = sh.getDataRange().getValues();
-  var headers = values[0] && values[0].length ? values[0] : HEADERS;
+  var headers = getSheetHeaders_(sh);
   var out = [];
   for (var i = 1; i < values.length; i++) {
     var r = {};
@@ -245,6 +285,7 @@ function rows_() {
       r[headers[j]] = values[i][j];
     }
     if (!r.comitati && r.comitato) r.comitati = r.comitato;
+    if (!r.settore) r.settore = 'master';
     r._row = i + 1;
     out.push(r);
   }
@@ -253,8 +294,9 @@ function rows_() {
 
 function writeRow_(r) {
   var sh = sheet_();
-  var line = HEADERS.map(function (h) { return safeCell_(r[h]); });
-  if (r._row) sh.getRange(r._row, 1, 1, HEADERS.length).setValues([line]);
+  var headers = getSheetHeaders_(sh);
+  var line = headers.map(function (h) { return safeCell_(r[h]); });
+  if (r._row) sh.getRange(r._row, 1, 1, headers.length).setValues([line]);
   else sh.appendRow(line);
 }
 
@@ -268,8 +310,11 @@ function escapeHtml_(s) {
   });
 }
 
-function page_(title, safeHtmlMessage) {
+function page_(title, safeHtmlMessage, settore) {
   var site = safeHttpUrl_(prop_('SITE_URL'));
+  if (site && settore === 'agonisti') {
+    site = site.replace(/\/+$/, '') + '/agonisti/';
+  }
   var html = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
     '<title>' + escapeHtml_(title) + '</title></head><body style="font-family:Segoe UI,Helvetica,Arial,sans-serif;background:#f3f5f9;' +
     'display:flex;min-height:90vh;align-items:center;justify-content:center;margin:0">' +
@@ -285,34 +330,36 @@ function sendConfirmation_(r) {
   var link = webAppUrl_() + '?action=confirm&id=' + encodeURIComponent(r.id);
   var comitatiLabel = formatComitati_(r.comitati);
   var nome = rawCell_(r.nome);
+  var settoreLabel = r.settore === 'agonisti' ? 'Agonisti' : 'Master';
   var html = '<div style="font-family:Segoe UI,Helvetica,Arial,sans-serif;color:#14223a">' +
     '<h2 style="color:#192b49">Ciao ' + escapeHtml_(nome) + ',</h2>' +
-    '<p>conferma la tua iscrizione agli alert delle gare di nuoto master (<b>Canottieri Nino Bixio 1883</b>) per: <b>' + escapeHtml_(comitatiLabel) + '</b>.</p>' +
+    '<p>conferma la tua iscrizione agli alert <b>' + settoreLabel + '</b> (<b>Canottieri Nino Bixio 1883</b>) per: <b>' + escapeHtml_(comitatiLabel) + '</b>.</p>' +
     '<p><a href="' + escapeHtml_(link) + '" style="background:#192b49;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">Conferma iscrizione</a></p>' +
     '<p style="font-size:12px;color:#566782">Se non hai richiesto tu l\'iscrizione, ignora questa email.</p></div>';
   MailApp.sendEmail({
     to: r.email,
-    subject: 'Conferma iscrizione - Nino Bixio 1883 Alert Gare Master',
+    subject: 'Conferma iscrizione (' + settoreLabel + ') - Nino Bixio 1883 Alert Gare',
     htmlBody: html,
     body: 'Conferma la tua iscrizione: ' + link,
-    name: 'Nino Bixio 1883 - Alert Gare Master'
+    name: 'Nino Bixio 1883 - Alert Gare'
   });
 }
 
 function sendUpdateConfirmation_(email, pending) {
   var link = webAppUrl_() + '?action=confirm_update&token=' + encodeURIComponent(pending.token);
   var comitatiLabel = formatComitati_(pending.comitati);
+  var settoreLabel = pending.settore === 'agonisti' ? 'Agonisti' : 'Master';
   var html = '<div style="font-family:Segoe UI,Helvetica,Arial,sans-serif;color:#14223a">' +
     '<h2 style="color:#192b49">Ciao ' + escapeHtml_(pending.nome) + ',</h2>' +
-    '<p>abbiamo ricevuto una richiesta di aggiornamento del tuo profilo alert (<b>Canottieri Nino Bixio 1883</b>) per: <b>' + escapeHtml_(comitatiLabel) + '</b>.</p>' +
+    '<p>abbiamo ricevuto una richiesta di aggiornamento del tuo profilo alert <b>' + settoreLabel + '</b> (<b>Canottieri Nino Bixio 1883</b>) per: <b>' + escapeHtml_(comitatiLabel) + '</b>.</p>' +
     '<p><a href="' + escapeHtml_(link) + '" style="background:#192b49;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">Conferma aggiornamento</a></p>' +
     '<p style="font-size:12px;color:#566782">Se non hai richiesto tu questa modifica, ignora questa email: le tue preferenze attuali resteranno invariate.</p></div>';
   MailApp.sendEmail({
     to: email,
-    subject: 'Conferma aggiornamento - Nino Bixio 1883 Alert Gare Master',
+    subject: 'Conferma aggiornamento (' + settoreLabel + ') - Nino Bixio 1883 Alert Gare',
     htmlBody: html,
     body: 'Conferma aggiornamento preferenze: ' + link,
-    name: 'Nino Bixio 1883 - Alert Gare Master'
+    name: 'Nino Bixio 1883 - Alert Gare'
   });
 }
 
@@ -340,8 +387,10 @@ function doPost(e) {
       if (!isAuthorizedList_(body.token)) return json_({ ok: false, error: 'Non autorizzato' });
       var subs = rows_().filter(function (r) { return r.stato === 'active'; }).map(function (r) {
         var comitati = normalizeComitati_(rawCell_(r.comitati));
+        var sett = rawCell_(r.settore) === 'agonisti' ? 'agonisti' : 'master';
         return {
           id: rawCell_(r.id),
+          settore: sett,
           nome: rawCell_(r.nome),
           cognome: rawCell_(r.cognome),
           email: rawCell_(r.email),
@@ -357,6 +406,7 @@ function doPost(e) {
     if (body.action !== 'subscribe') return json_({ ok: false, error: 'Azione non supportata' });
     if (body.website) return json_({ ok: true, status: 'pending' }); // honeypot anti-bot
 
+    var settore = body.settore === 'agonisti' ? 'agonisti' : 'master';
     var nome = cleanText_(body.nome, 60);
     var cognome = cleanText_(body.cognome, 60);
     var email = cleanText_(body.email, 120).toLowerCase();
@@ -376,7 +426,7 @@ function doPost(e) {
     if (isCardBruteBlocked_()) {
       return json_({ ok: false, error: 'Troppi tentativi di verifica cartellino. Riprova tra qualche minuto.' });
     }
-    var check = verifyCartellino_(cartellino, cognome);
+    var check = verifyCartellino_(settore, cartellino, cognome, nome);
     if (!check.ok) {
       recordCardFail_();
       return json_({ ok: false, error: check.error });
@@ -384,15 +434,18 @@ function doPost(e) {
 
     var comitatiCsv = comitati.join(',');
     var now = new Date();
-    var existing = rows_().filter(function (r) { return rawCell_(r.email).toLowerCase() === email; })[0];
+    var existing = rows_().filter(function (r) {
+      return rawCell_(r.email).toLowerCase() === email && (rawCell_(r.settore) || 'master') === settore;
+    })[0];
 
     if (existing) {
       if (existing.stato === 'active') {
-        if (canSendMail_(email)) {
+        if (canSendMail_(email, settore)) {
           var token = Utilities.getUuid();
           var pending = {
             token: token,
             id: rawCell_(existing.id),
+            settore: settore,
             nome: nome,
             cognome: cognome,
             cartellino: cartellino,
@@ -404,6 +457,7 @@ function doPost(e) {
         }
         return json_({ ok: true, status: 'update_pending' });
       }
+      existing.settore = settore;
       existing.nome = nome;
       existing.cognome = cognome;
       existing.cartellino = cartellino;
@@ -412,12 +466,13 @@ function doPost(e) {
       existing.stato = 'pending';
       existing.aggiornato = now;
       writeRow_(existing);
-      if (canSendMail_(email)) sendConfirmation_(existing);
+      if (canSendMail_(email, settore)) sendConfirmation_(existing);
       return json_({ ok: true, status: 'pending' });
     }
 
     var r = {
       id: Utilities.getUuid(),
+      settore: settore,
       nome: nome,
       cognome: cognome,
       email: email,
@@ -430,7 +485,7 @@ function doPost(e) {
       aggiornato: now
     };
     writeRow_(r);
-    if (canSendMail_(email)) sendConfirmation_(r);
+    if (canSendMail_(email, settore)) sendConfirmation_(r);
     return json_({ ok: true, status: 'pending' });
   } catch (err) {
     return json_({ ok: false, error: 'Errore interno, riprova più tardi.' });
@@ -457,6 +512,10 @@ function doGet(e) {
       if (!cleanComitati.length) return page_('Link non valido', 'Comitati non validi.');
       var row = rows_().filter(function (x) { return rawCell_(x.id) === pending.id; })[0];
       if (!row || row.stato !== 'active') return page_('Link non valido', 'Iscrizione non attiva o non trovata.');
+      var sett = row.settore === 'agonisti' ? 'agonisti' : 'master';
+      if (sett === 'agonisti' && !isAuthorizedAgonisti_(pending.nome, pending.cognome, pending.cartellino || row.cartellino)) {
+        return page_('Non autorizzato', 'Sezione Agonisti riservata esclusivamente ad Andrea Frovi (123819).', sett);
+      }
       row.nome = cleanText_(pending.nome, 60);
       row.cognome = cleanText_(pending.cognome, 60);
       row.cartellino = cleanText_(pending.cartellino || row.cartellino, 16);
@@ -467,8 +526,9 @@ function doGet(e) {
       cache.remove('upd_' + tok);
       return page_(
         'Preferenze aggiornate!',
-        'Da ora riceverai gli alert delle gare master per: <b>' +
-          escapeHtml_(formatComitati_(row.comitati)) + '</b>.'
+        'Da ora riceverai gli alert delle gare per: <b>' +
+          escapeHtml_(formatComitati_(row.comitati)) + '</b>.',
+        sett
       );
     } finally {
       try { lockUpd.releaseLock(); } catch (ignore) {}
@@ -483,6 +543,7 @@ function doGet(e) {
     try {
       var r = rows_().filter(function (x) { return rawCell_(x.id) === id; })[0];
       if (!r) return page_('Link non valido', 'Iscrizione non trovata o già rimossa.');
+      var rSett = r.settore === 'agonisti' ? 'agonisti' : 'master';
       if (action === 'confirm') {
         r.stato = 'active';
         r.confermato = r.confermato || new Date();
@@ -490,18 +551,19 @@ function doGet(e) {
         writeRow_(r);
         return page_(
           'Iscrizione confermata!',
-          'Riceverai un\'email appena viene pubblicata una nuova gara master per: <b>' +
-            escapeHtml_(formatComitati_(r.comitati)) + '</b>.'
+          'Riceverai un\'email appena viene pubblicata una nuova gara per: <b>' +
+            escapeHtml_(formatComitati_(r.comitati)) + '</b>.',
+          rSett
         );
       }
       r.stato = 'unsubscribed';
       r.aggiornato = new Date();
       writeRow_(r);
-      return page_('Iscrizione annullata', 'Non riceverai più email di alert. Puoi iscriverti di nuovo in qualsiasi momento.');
+      return page_('Iscrizione annullata', 'Non riceverai più email di alert. Puoi iscriverti di nuovo in qualsiasi momento.', rSett);
     } finally {
       try { lock.releaseLock(); } catch (ignore) {}
     }
   }
 
-  return json_({ ok: true, service: 'alert-gare-nuoto-master' });
+  return json_({ ok: true, service: 'alert-gare-nuoto-nino-bixio' });
 }

@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -25,8 +26,17 @@ function productionCspPlugin() {
   };
 }
 
-// base relativa: funziona sia su https://<utente>.github.io/<repo>/ sia su dominio personalizzato.
+// base relativa: funziona sia su https://<utente>.github.io/<repo>/ sia su dominio personalizzato
+// e supporta sia / (Master) che /agonisti/ (Agonisti).
 export default defineConfig({
   plugins: [react(), productionCspPlugin()],
   base: './',
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        agonisti: resolve(__dirname, 'agonisti/index.html'),
+      },
+    },
+  },
 });

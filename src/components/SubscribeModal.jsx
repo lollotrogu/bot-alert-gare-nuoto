@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import SubscribeForm from './SubscribeForm.jsx';
 
-export default function SubscribeModal({ open, onClose, defaultComitato }) {
+export default function SubscribeModal({ open, onClose, defaultComitato, sector = 'master' }) {
   const closeBtnRef = useRef(null);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function SubscribeModal({ open, onClose, defaultComitato }) {
         >
           ✕
         </button>
-        <SubscribeForm defaultComitato={defaultComitato} onClose={onClose} />
+        <SubscribeForm defaultComitato={defaultComitato} sector={sector} onClose={onClose} />
       </div>
     </div>
   );

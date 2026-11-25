@@ -1,22 +1,29 @@
+import { assetUrl } from '../lib/api.js';
 import { safeHttpUrl } from '../lib/security.js';
 
-export default function Footer({ source }) {
-  const safeSource = safeHttpUrl(source) || 'https://www.federnuoto.it/home/master.html';
+export default function Footer({ source, sector = 'master' }) {
+  const fallback = sector === 'agonisti'
+    ? 'https://www.federnuoto.it/home/nuoto.html'
+    : 'https://www.federnuoto.it/home/master.html';
+  const safeSource = safeHttpUrl(source) || fallback;
   return (
     <footer className="footer">
       <div className="container footer-inner">
         <img
           className="footer-logo"
-          src={`${import.meta.env.BASE_URL}logo-nino-bixio.jpg`}
+          src={assetUrl('logo-nino-bixio.jpg')}
           alt="Canottieri Nino Bixio 1883"
           width="36"
           height="36"
         />
         <p>
-          <strong>Canottieri Nino Bixio 1883 · Piacenza</strong> — Servizio riservato agli atleti della squadra Nuoto Master.
-          Dati tratti dal calendario pubblico del{' '}
+          <strong>Canottieri Nino Bixio 1883 · Piacenza</strong> — Servizio riservato alla squadra{' '}
+          {sector === 'agonisti' ? 'Nuoto Agonisti' : 'Nuoto Master'}.
+          Dati tratti dal calendario pubblico della{' '}
           <a href={safeSource} target="_blank" rel="noopener noreferrer">
-            Circuito Supermaster della Federazione Italiana Nuoto
+            {sector === 'agonisti'
+              ? 'Federazione Italiana Nuoto (Attività Agonistica)'
+              : 'Federazione Italiana Nuoto (Circuito Supermaster)'}
           </a>
           : verifica sempre date, regolamenti e scadenze iscrizioni sulla scheda ufficiale della gara.
         </p>

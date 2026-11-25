@@ -1,17 +1,16 @@
-// Client per il sito federnuoto.it (Circuito Supermaster).
-// Usa lo stesso endpoint JSON pubblico chiamato dalla pagina
-// https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html
+// Client per il sito federnuoto.it (Circuito Supermaster e Attività Agonistica Nuoto).
+// Usa lo stesso endpoint JSON pubblico chiamato dalle pagine calendario su federnuoto.it.
 import { parse } from 'node-html-parser';
-import { comitatoFromProvincia, parseLocalita } from '../../src/lib/comitati.js';
+import { comitatoFromProvincia, comitatoFromText, parseLocalita } from '../../src/lib/comitati.js';
 import { safeHttpUrl, stripControlChars } from '../../src/lib/security.js';
 
 export const FIN_BASE = 'https://www.federnuoto.it';
-const EVENTI_PAGE = `${FIN_BASE}/home/master/circuito-supermaster/eventi-circuito-supermaster.html`;
-const RIEPILOGO_PAGE = `${FIN_BASE}/home/master/circuito-supermaster/riepilogo-eventi.html`;
+const MASTER_EVENTI_PAGE = `${FIN_BASE}/home/master/circuito-supermaster/eventi-circuito-supermaster.html`;
+const MASTER_RIEPILOGO_PAGE = `${FIN_BASE}/home/master/circuito-supermaster/riepilogo-eventi.html`;
 const API = `${FIN_BASE}/index.php?option=com_solrconnect&format=json`;
 
-const UA = 'bot-alert-gare-nuoto (+https://github.com) - aggiornamento calendario master';
-const DELAY_MS = 300;
+const UA = 'bot-alert-gare-nuoto (+https://github.com) - aggiornamento calendario nuoto';
+const DELAY_MS = 180;
 
 const MESI = {
   gennaio: 1, febbraio: 2, marzo: 3, aprile: 4, maggio: 5, giugno: 6,
@@ -22,6 +21,32 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const clean = (s = '') =>
   stripControlChars(s.replace(/&nbsp;/g, ' ').replace(/&#96;/g, '`'));
 const pad = (n) => String(n).padStart(2, '0');
+
+export function getSectorConfig(sector = 'master') {
+  const now = new Date();
+  const season = String(now.getMonth() + 1 >= 9 ? now.getFullYear() : now.getFullYear() - 1);
+  const seasonNext = String(Number(season) + 1);
+  if (sector === 'agonisti') {
+    return {
+      sector: 'agonisti',
+      pageUrl: `${FIN_BASE}/home/nuoto/calendario-nazionale-nuoto/calendario-nazionale-nuoto-${season}-${seasonNext}.html`,
+      defaults: {
+        'solr[id_settore]': '1',
+        'solr[id_tipologia_1]': '1',
+        'solr[stagione]': season,
+      },
+    };
+  }
+  return {
+    sector: 'master',
+    pageUrl: MASTER_EVENTI_PAGE,
+    defaults: {
+      'solr[id_settore]': '1',
+      'solr[id_tipologia_1]': '2',
+      'solr[stagione]': season,
+    },
+  };
+}
 
 function safeFinHref(href) {
   if (!href || typeof href !== 'string') return null;
@@ -69,21 +94,16 @@ async function apiCall(view, params, page = 1) {
 }
 
 /** Legge dalla pagina FIN i filtri nascosti (settore, tipologia, stagione corrente). */
-export async function getBaseParams() {
-  const now = new Date();
-  const fallbackSeason = String(now.getMonth() + 1 >= 9 ? now.getFullYear() : now.getFullYear() - 1);
-  const params = {
-    'solr[id_settore]': '1',
-    'solr[id_tipologia_1]': '2',
-    'solr[stagione]': fallbackSeason,
-  };
+export async function getBaseParams(sector = 'master') {
+  const cfg = getSectorConfig(sector);
+  const params = { ...cfg.defaults };
   try {
-    const html = await fetchText(EVENTI_PAGE);
+    const html = await fetchText(cfg.pageUrl);
     for (const m of html.matchAll(/type="hidden"\s+data-filter="solr"\s+name="(solr\[[a-z_0-9]+\])"\s+value="([^"]*)"/g)) {
       params[m[1]] = clean(m[2]);
     }
   } catch (err) {
-    console.warn('[fin] impossibile leggere i filtri dalla pagina, uso i default:', err.message);
+    console.warn(`[fin:${sector}] impossibile leggere i filtri dalla pagina, uso i default:`, err.message);
   }
   return params;
 }
@@ -99,7 +119,7 @@ function parseDates(root) {
   }).filter(Boolean);
 }
 
-/** Elenco eventi della stagione dal calendario Supermaster. */
+/** Elenco eventi della stagione dal calendario FIN. */
 export async function fetchCalendario(baseParams) {
   const events = new Map();
   for (let page = 1; page <= 10; page++) {
@@ -129,9 +149,9 @@ export async function fetchCalendario(baseParams) {
   return [...events.values()];
 }
 
-/** Id evento presenti nella tabella "Riepilogo eventi" (pagina redazionale), per completezza. */
+/** Id evento presenti nella tabella "Riepilogo eventi" (pagina redazionale Master). */
 export async function fetchRiepilogo() {
-  const html = await fetchText(RIEPILOGO_PAGE);
+  const html = await fetchText(MASTER_RIEPILOGO_PAGE);
   const root = parse(html);
   const out = [];
   for (const table of root.querySelectorAll('table.records')) {
@@ -141,7 +161,7 @@ export async function fetchRiepilogo() {
       if (tds.length < 3) continue;
       const href = tds[3]?.querySelector('a')?.getAttribute('href') || '';
       const m = href.match(/risultati\/(\d+):([^"]+)/);
-      if (!m) continue; // senza scheda non c'è un id stabile
+      if (!m) continue;
       const dm = clean(tds[0].text).match(/(\d{1,2})(?:[-_]\d{1,2})?\/(\d{1,2})/);
       out.push({
         id: m[1],
@@ -191,8 +211,8 @@ export async function fetchDettaglio(id, baseParams) {
   };
 }
 
-/** Normalizza un evento nel formato pubblicato in public/data/gare.json */
-export function normalizeEvent(base, det) {
+/** Normalizza un evento nel formato pubblicato in public/data/gare*.json */
+export function normalizeEvent(base, det, { pageUrl = MASTER_EVENTI_PAGE } = {}) {
   const id = String(base.id || '').replace(/\D+/g, '');
   const dates = (det?.dates?.length ? det.dates : base.dates || []).slice().sort();
   const info = det?.info || {};
@@ -203,6 +223,11 @@ export function normalizeEvent(base, det) {
     provincia = fromSede.provincia;
     citta = citta || fromSede.citta;
   }
+  const comitato = comitatoFromProvincia(provincia) || comitatoFromText(info['Comitato'] || '');
+  const vascaRaw = base.vasca || info['Base Vasca'] || '';
+  const vasca = vascaRaw
+    ? (/vasca/i.test(vascaRaw) ? clean(vascaRaw) : `Vasca da ${clean(vascaRaw).replace(/m$/i, '')}m`)
+    : '';
   const alias = safeAlias(base.alias, id);
   return {
     id,
@@ -211,9 +236,10 @@ export function normalizeEvent(base, det) {
     dateEnd: dates[dates.length - 1] || null,
     citta: clean(citta),
     provincia,
-    comitato: comitatoFromProvincia(provincia),
-    vasca: clean(base.vasca || (info['Base Vasca'] ? `Vasca da ${info['Base Vasca']}m` : '')),
-    tipo: clean(base.tipo || ''),
+    comitato,
+    vasca,
+    tipo: clean(base.tipo || info['Competizione'] || ''),
+    categorie: clean(info['Categorie Ammesse'] || ''),
     organizzazione: clean(info['Organizzazione'] || ''),
     impianto: clean(info['Impianto'] || ''),
     indirizzo: sede,
@@ -223,7 +249,7 @@ export function normalizeEvent(base, det) {
     locandinaUrl: safeHttpUrl(det?.locandinaUrl) || null,
     iscrizioniUrl: safeHttpUrl(det?.iscrizioniUrl) || null,
     risultatiUrl: safeHttpUrl(det?.risultatiUrl) || null,
-    url: `${EVENTI_PAGE}#/${alias}`,
+    url: `${pageUrl}#/${alias}`,
   };
 }
 
