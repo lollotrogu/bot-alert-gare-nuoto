@@ -1,0 +1,111 @@
+name: Aggiorna gare FIN, invia alert e pubblica su GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+  schedule:
+    # Ogni 6 ore (UTC): controlla il calendario FIN e invia eventuali alert
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: pages-and-scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape-and-notify:
+    # Su push normale fa solo test, build & deploy; su cron o avvio manuale esegue anche scraping e notifiche
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installa dipendenze
+        run: npm ci
+
+      - name: Scarica calendario gare master FIN
+        run: node scripts/scrape.mjs
+
+      - name: Invia alert email per le nuove gare
+        env:
+          APPS_SCRIPT_URL: ${{ vars.APPS_SCRIPT_URL }}
+          APPS_SCRIPT_TOKEN: ${{ secrets.APPS_SCRIPT_TOKEN }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+        run: node scripts/notify.mjs
+
+      - name: Salva dati aggiornati nel repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/gare.json
+          if [ -f data/notified.json ]; then git add data/notified.json; fi
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: aggiorna calendario gare FIN"
+            git push
+          else
+            echo "Nessuna modifica ai dati."
+          fi
+
+  build:
+    needs: scrape-and-notify
+    if: always() && (needs.scrape-and-notify.result == 'success' || needs.scrape-and-notify.result == 'skipped')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installa dipendenze
+        run: npm ci
+
+      - name: Esegui unit test
+        run: npm test
+
+      - name: Build applicazione React
+        env:
+          VITE_APPS_SCRIPT_URL: ${{ vars.APPS_SCRIPT_URL }}
+        run: npm run build
+
+      - name: Upload artefatto GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy su GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
