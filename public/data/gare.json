@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-25T13:48:11.190Z",
+  "updatedAt": "2026-11-25T15:08:39.598Z",
   "season": "2026",
   "source": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html",
   "count": 47,
@@ -29,7 +29,7 @@
         "Inizio/Chiusura iscrizioni": "05/10 - 19/10 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMDkxLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMDkxLnBkZg==",
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150091:distanze-speciali-campania-2026.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -58,7 +58,7 @@
         "Inizio/Chiusura iscrizioni": "30/09 - 22/10 17:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMDkyLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMDkyLnBkZg==",
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150092:25°-trofeo-città-di-verolanuova.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -87,9 +87,9 @@
         "Inizio/Chiusura iscrizioni": "15/10 - 27/10 15:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMjQ0LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
-      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150244:1^-union-water-cup-halloween-edition-3°-trofeo-swim-master,-fuori-circuito.html",
+      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150244:evento.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
     },
     {
@@ -116,7 +116,7 @@
         "Inizio/Chiusura iscrizioni": "15/10 - 01/11 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTcwLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMTcwLnBkZg==",
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150170:distanze-speciali-master-lazio.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -145,7 +145,7 @@
         "Inizio/Chiusura iscrizioni": "01/10 - 29/10 12:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMDk4LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMDk4LnBkZg==",
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150098:17°-memorial-f-calvino.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -174,9 +174,9 @@
         "Inizio/Chiusura iscrizioni": "21/10 - 02/11 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMDk2LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMDk2LnBkZg==",
-      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150096:17°-trofeo-citta`di-saronno.html",
+      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150096:evento.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
     },
     {
@@ -203,7 +203,7 @@
         "Inizio/Chiusura iscrizioni": "12/10 - 04/11 12:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMDk3LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMDk3LnBkZg==",
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150097:2°-trofeo-sporting.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -232,9 +232,9 @@
         "Inizio/Chiusura iscrizioni": "01/10 - 08/11 08:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMDk0LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMDk0LnBkZg==",
-      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150094:21°-meeting-della-solidarieta`.html",
+      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150094:evento.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
     },
     {
@@ -261,9 +261,9 @@
         "Inizio/Chiusura iscrizioni": "14/10 - 03/11 12:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMDk1LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMDk1LnBkZg==",
-      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150095:31°-trofeo-citta`-di-firenze.html",
+      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150095:evento.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
     },
     {
@@ -290,7 +290,7 @@
         "Inizio/Chiusura iscrizioni": "27/10 - 05/11 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTAxLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150101:coppa-fin-calabria.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -319,7 +319,7 @@
         "Inizio/Chiusura iscrizioni": "12/10 - 02/11 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMDkzLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMDkzLnBkZg==",
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150093:trofeo-lalla-cecchi.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -348,7 +348,7 @@
         "Inizio/Chiusura iscrizioni": "01/10 - 09/11 23:45"
       },
       "locandinaUrl": null,
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150099:16°-trofeo-master-aquarius-fuori-circuito.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -377,7 +377,7 @@
         "Inizio/Chiusura iscrizioni": "12/10 - 08/11 15:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTAwLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMTAwLnBkZg==",
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150100:23°-trofeo-de-akker.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -406,9 +406,9 @@
         "Inizio/Chiusura iscrizioni": "31/10 - 14/11 12:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTAzLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMTAzLnBkZg==",
-      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150103:9°-trofeo-citta`-di-belluno.html",
+      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150103:evento.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
     },
     {
@@ -435,7 +435,7 @@
         "Inizio/Chiusura iscrizioni": "12/10 - 18/11 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTA1LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMTA1LnBkZg==",
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150105:11°-trofeo-flegreo.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -464,7 +464,7 @@
         "Inizio/Chiusura iscrizioni": "27/10 - 14/11 23:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTA0LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMTA0LnBkZg==",
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150104:14°-trofeo-coopernuoto-master.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -493,7 +493,7 @@
         "Inizio/Chiusura iscrizioni": "26/10 - 13/11 12:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTAyLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150102:7°-trofeo-gonzaga-memorial-rascaroli.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -522,7 +522,7 @@
         "Inizio/Chiusura iscrizioni": "07/11 - 14/11 00:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTEyLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMTEyLnBkZg==",
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150112:9°-sardinia-in-water.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -551,7 +551,7 @@
         "Inizio/Chiusura iscrizioni": "04/11 - 15/11 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwNjQ1LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150645:campionato-indoor.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -580,9 +580,9 @@
         "Inizio/Chiusura iscrizioni": "02/11 - 21/11 21:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTA3LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
-      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150107:22°-trofeo-citta`di-riccione.html",
+      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150107:evento.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
     },
     {
@@ -609,7 +609,7 @@
         "Inizio/Chiusura iscrizioni": "19/10 - 24/11 12:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTEzLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150113:28°-trofeo-delle-dolomiti.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -638,7 +638,7 @@
         "Inizio/Chiusura iscrizioni": "23/10 - 23/11 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTA4LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150108:3°-memorial-il-piastra.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -667,7 +667,7 @@
         "Inizio/Chiusura iscrizioni": "19/10 - 22/11 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTExLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150111:3°-trofeo-master-tln.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -696,7 +696,7 @@
         "Inizio/Chiusura iscrizioni": "29/10 - 21/11 23:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTA2LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150106:3°-trofeo-nazionale-master-città-di-matera.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -725,9 +725,9 @@
         "Inizio/Chiusura iscrizioni": "27/10 - 23/11 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTA5LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
-      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150109:32°-trofeo-citta`di-rapallo.html",
+      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150109:evento.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
     },
     {
@@ -754,7 +754,7 @@
         "Inizio/Chiusura iscrizioni": "24/10 - 23/11 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTEwLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150110:9º-trofeo-roma-nuoto-master.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -782,7 +782,7 @@
         "Inizio/Chiusura iscrizioni": "26/10 - 28/11 23:45"
       },
       "locandinaUrl": null,
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150115:3°-campionato-italiano-master-invernale.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -811,7 +811,7 @@
         "Inizio/Chiusura iscrizioni": "02/11 - 04/12 20:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTE5LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150119:1°-trofeo-master-fin-plus-ostia.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -840,7 +840,7 @@
         "Inizio/Chiusura iscrizioni": "05/11 - 07/12 12:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTE4LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150118:master-christmas-2026.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -869,7 +869,7 @@
         "Inizio/Chiusura iscrizioni": "21/11 - 05/12 12:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTIwLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150120:2°-trofeo-master-città-di-rovigo.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -898,7 +898,7 @@
         "Inizio/Chiusura iscrizioni": "15/11 - 06/12 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTE0LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150114:4°-trofeo-christmas-swim.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -927,7 +927,7 @@
         "Inizio/Chiusura iscrizioni": "25/11 - 10/12 22:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTIxLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150121:swimmicup-merry-x-master-edition-2026.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -956,7 +956,7 @@
         "Inizio/Chiusura iscrizioni": "01/12 - 14/12 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTIyLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150122:trofeo-buon-natale-master-2026.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -985,7 +985,7 @@
         "Inizio/Chiusura iscrizioni": "11/11 - 08/12 23:30"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTIzLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150123:xviii°-memorial-brunelleschi.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -1014,7 +1014,7 @@
         "Inizio/Chiusura iscrizioni": "30/11 - 29/12 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTQ2LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150146:1°-meeting-della-befana-rari-nantes-trento.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -1043,7 +1043,7 @@
         "Inizio/Chiusura iscrizioni": "19/12 - 02/01 12:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTQ4LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150148:10°-trofeo-casa-di-caccia.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -1072,9 +1072,9 @@
         "Inizio/Chiusura iscrizioni": "01/12 - 04/01 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTQ3LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
-      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150147:25°-trofeo-citta`di-ravenna.html",
+      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150147:evento.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
     },
     {
@@ -1101,7 +1101,7 @@
         "Inizio/Chiusura iscrizioni": "07/12 - 03/01 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTQ5LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150149:2°-meeting-master-della-valdinievole-2°-memorial-sergio-comello.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -1130,7 +1130,7 @@
         "Inizio/Chiusura iscrizioni": "15/12 - 11/01 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTcyLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150172:3°-trofeo-mantova-nuoto-master-memorial-emanuele-bonfante.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -1159,7 +1159,7 @@
         "Inizio/Chiusura iscrizioni": "17/12 - 12/01 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTc0LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150174:30°-trofeo-forum-master-sprint-2°-memorial-luca-tranzillo.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -1188,9 +1188,9 @@
         "Inizio/Chiusura iscrizioni": "16/12 - 12/01 21:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTczLnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
-      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150173:5°-meeting-master-citta`-di-cordenons.html",
+      "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150173:evento.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
     },
     {
@@ -1217,7 +1217,7 @@
         "Inizio/Chiusura iscrizioni": "14/12 - 19/01 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTc2LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150176:17°-trofeo-buonconvento-master.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -1246,7 +1246,7 @@
         "Inizio/Chiusura iscrizioni": "21/12 - 19/01 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTc5LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150179:11°-trofeo-sprint-di-chiavari.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -1275,7 +1275,7 @@
         "Inizio/Chiusura iscrizioni": "29/12 - 18/01 12:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTc3LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150177:14°-trofeo-novara-è-master.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -1304,7 +1304,7 @@
         "Inizio/Chiusura iscrizioni": "21/12 - 17/01 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTc4LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150178:2°-trofeo-città-di-maranello.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -1333,7 +1333,7 @@
         "Inizio/Chiusura iscrizioni": "28/12 - 24/01 12:00"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMjc4LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150278:campionato-regionale-master-lazio-2027.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
@@ -1362,7 +1362,7 @@
         "Inizio/Chiusura iscrizioni": "04/01 - 01/02 23:45"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMjc5LnBkZg==",
-      "iscrizioniUrl": "http://portale.federnuoto.it",
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150279:campionato-regionale-master-liguria.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
