@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-27T01:38:21.761Z",
+  "updatedAt": "2026-11-27T16:29:04.736Z",
   "sector": "master",
   "season": "2026",
   "source": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html",
@@ -512,7 +512,7 @@
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTAyLnBkZg==",
       "iscrizioniUrl": "http://portale.federnuoto.it/",
-      "risultatiUrl": null,
+      "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMTAyLnBkZg==",
       "url": "https://www.federnuoto.it/home/master/circuito-supermaster/eventi-circuito-supermaster.html#/risultati/150102:7°-trofeo-gonzaga-memorial-rascaroli.html",
       "firstSeen": "2026-11-25T13:42:34.440Z"
     },

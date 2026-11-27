@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-11-27T01:38:33.431Z",
+  "updatedAt": "2026-11-27T16:29:16.452Z",
   "sector": "agonisti",
   "season": "2026",
   "source": "https://www.federnuoto.it/home/nuoto/calendario-nazionale-nuoto/calendario-nazionale-nuoto-2026-2027.html",
-  "count": 319,
+  "count": 321,
   "detailErrors": 0,
   "events": [
     {
@@ -3138,7 +3138,7 @@
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMTYzLnBkZg==",
       "iscrizioniUrl": "http://portale.federnuoto.it/",
-      "risultatiUrl": null,
+      "risultatiUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL3Jpc3VsdGF0aS8wMDAwMTUwMTYzLnBkZg==",
       "url": "https://www.federnuoto.it/home/nuoto/calendario-nazionale-nuoto/calendario-nazionale-nuoto-2026-2027.html#/risultati/150163:xv-memorial-don-guglielmo.html",
       "firstSeen": "2026-11-25T20:41:47.474Z"
     },
@@ -6517,6 +6517,38 @@
       "firstSeen": "2026-11-25T20:41:47.474Z"
     },
     {
+      "id": "150838",
+      "title": "CAMPIONATI REGIONALI INVERNALI III° - IV° PARTE",
+      "dateStart": "2026-12-13",
+      "dateEnd": "2026-12-13",
+      "citta": "Matera",
+      "provincia": "MT",
+      "comitato": "basilicata",
+      "vasca": "Vasca da 25m",
+      "tipo": "Federale",
+      "categorie": "Esordienti A, Esordienti B, Assoluti",
+      "organizzazione": "COMITATO REGIONALE BASILICATA",
+      "impianto": "POLISPORTIVO COMUNALE PALASASSI",
+      "indirizzo": "VIALE DELLE NAZIONI UNITE, SNC - Matera (MT)",
+      "iscrizioni": "27/11 - 10/12",
+      "tempiLimite": "SI",
+      "info": {
+        "Competizione": "Federale",
+        "Organizzazione": "COMITATO REGIONALE BASILICATA",
+        "Impianto": "POLISPORTIVO COMUNALE PALASASSI",
+        "Sede": "VIALE DELLE NAZIONI UNITE, SNC - Matera (MT)",
+        "Base Vasca": "25m",
+        "Categorie Ammesse": "Esordienti A, Esordienti B, Assoluti",
+        "Inizio/Chiusura iscrizioni": "27/11 - 10/12",
+        "Tempi Limite": "SI"
+      },
+      "locandinaUrl": null,
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
+      "risultatiUrl": null,
+      "url": "https://www.federnuoto.it/home/nuoto/calendario-nazionale-nuoto/calendario-nazionale-nuoto-2026-2027.html#/risultati/150838:campionati-regionali-invernali-iii°-iv°-parte.html",
+      "firstSeen": "2026-11-27T16:29:16.452Z"
+    },
+    {
       "id": "150487",
       "title": "GRAND PRIX ESORDIENTI A 2 TAPPA",
       "dateStart": "2026-12-13",
@@ -6579,6 +6611,38 @@
       "risultatiUrl": null,
       "url": "https://www.federnuoto.it/home/nuoto/calendario-nazionale-nuoto/calendario-nazionale-nuoto-2026-2027.html#/risultati/150726:manifestazione-provinciale-esordienti-a-e-b-seconda-parte.html",
       "firstSeen": "2026-11-25T20:41:47.474Z"
+    },
+    {
+      "id": "150848",
+      "title": "Molise Winter Tour 2° Tappa",
+      "dateStart": "2026-12-13",
+      "dateEnd": "2026-12-13",
+      "citta": "Campodipietra",
+      "provincia": "CB",
+      "comitato": "molise",
+      "vasca": "Vasca da 25m",
+      "tipo": "Federale",
+      "categorie": "Esordienti A, Esordienti B",
+      "organizzazione": "DELEGAZIONE MOLISE",
+      "impianto": "CENTRO SPORTIVO PUNTO COM - M2",
+      "indirizzo": "CONTRADA SELVA, 29 - Campodipietra (CB)",
+      "iscrizioni": "27/11 - 11/12",
+      "tempiLimite": "SI",
+      "info": {
+        "Competizione": "Federale",
+        "Organizzazione": "DELEGAZIONE MOLISE",
+        "Impianto": "CENTRO SPORTIVO PUNTO COM - M2",
+        "Sede": "CONTRADA SELVA, 29 - Campodipietra (CB)",
+        "Base Vasca": "25m",
+        "Categorie Ammesse": "Esordienti A, Esordienti B",
+        "Inizio/Chiusura iscrizioni": "27/11 - 11/12",
+        "Tempi Limite": "SI"
+      },
+      "locandinaUrl": null,
+      "iscrizioniUrl": "http://portale.federnuoto.it/",
+      "risultatiUrl": null,
+      "url": "https://www.federnuoto.it/home/nuoto/calendario-nazionale-nuoto/calendario-nazionale-nuoto-2026-2027.html#/risultati/150848:molise-winter-tour-2°-tappa.html",
+      "firstSeen": "2026-11-27T16:29:16.452Z"
     },
     {
       "id": "150770",
@@ -7892,7 +7956,7 @@
       "organizzazione": "OLGIATA 20.12 SSD",
       "impianto": "OLGIATA 20.12",
       "indirizzo": "VIA G. CANTINI, 4 - Roma (RM)",
-      "iscrizioni": "16/11 - 31/12",
+      "iscrizioni": "30/11 - 31/12",
       "tempiLimite": "NO",
       "info": {
         "Competizione": "Extrafederale",
@@ -7902,7 +7966,7 @@
         "Sede": "VIA G. CANTINI, 4 - Roma (RM)",
         "Base Vasca": "25m",
         "Categorie Ammesse": "Ragazzi, Assoluti",
-        "Inizio/Chiusura iscrizioni": "16/11 - 31/12",
+        "Inizio/Chiusura iscrizioni": "30/11 - 31/12",
         "Tempi Limite": "NO"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwNjAwLnBkZg==",
@@ -9135,7 +9199,7 @@
       "organizzazione": "TEAM NUOTO MODENA ASSOCIAZIONE SPORTIVA DILETTANTISTICA",
       "impianto": "SASSUOLO PISCINA COMUNALE",
       "indirizzo": "VIA NIEVO, 12 - Sassuolo (MO)",
-      "iscrizioni": "23/11 - 23/11",
+      "iscrizioni": "28/11 - 28/11",
       "tempiLimite": "NO",
       "info": {
         "Competizione": "Extrafederale",
@@ -9145,7 +9209,7 @@
         "Sede": "VIA NIEVO, 12 - Sassuolo (MO)",
         "Base Vasca": "25m",
         "Categorie Ammesse": "Assoluti",
-        "Inizio/Chiusura iscrizioni": "23/11 - 23/11",
+        "Inizio/Chiusura iscrizioni": "28/11 - 28/11",
         "Tempi Limite": "NO"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMzI1LnBkZg==",
@@ -9849,7 +9913,7 @@
       "organizzazione": "SOCIETA' SPORTIVA DILETTANTISTICA RARI NANTES TRIESTE",
       "impianto": "PISCINA OLIMPIONICA Bella Italia EFA Village",
       "indirizzo": "VIALE CENTRALE, 29 - Lignano Sabbiadoro (UD)",
-      "iscrizioni": "26/11 - 26/11",
+      "iscrizioni": "27/11 - 27/11",
       "tempiLimite": "NO",
       "info": {
         "Competizione": "Extrafederale",
@@ -9859,7 +9923,7 @@
         "Sede": "VIALE CENTRALE, 29 - Lignano Sabbiadoro (UD)",
         "Base Vasca": "50m",
         "Categorie Ammesse": "Assoluti",
-        "Inizio/Chiusura iscrizioni": "26/11 - 26/11",
+        "Inizio/Chiusura iscrizioni": "27/11 - 27/11",
         "Tempi Limite": "NO"
       },
       "locandinaUrl": "https://www.federnuoto.it/component/solrconnect/download.html?file=L3Zhci93d3cvZmluX2ZpbGVzL2V2ZW50aS8wMDAwMTUwMzU2LnBkZg==",
